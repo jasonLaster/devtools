@@ -13,7 +13,7 @@ const dom = require("react-dom-factories");
 const PropTypes = require("prop-types");
 const { sortBy, range } = require("lodash");
 const { SVG } = require("image/svg");
-const { log } = require("protocol/socket");
+const { sendMessage, log } = require("protocol/socket");
 const {
   closestPaintOrMouseEvent,
   nextPaintOrMouseEvent,
@@ -39,6 +39,9 @@ const { div } = dom;
 
 const markerWidth = 7;
 const imgDir = "devtools/skin/images";
+
+const url = new URL(window.location.href);
+const recordingId = url.searchParams.get("id");
 
 function classname(name, bools) {
   for (const key in bools) {
@@ -95,7 +98,7 @@ function getProgress(executionPoint) {
 function getClosestMessage(messages, executionPoint) {
   const progress = getProgress(executionPoint);
 
-  return sortBy(messages, (message) =>
+  return sortBy(messages, message =>
     Math.abs(progress - getMessageProgress(message))
   )[0];
 }
@@ -127,6 +130,7 @@ class WebReplayPlayer extends Component {
   static get propTypes() {
     return {
       toolbox: PropTypes.object,
+      console: PropTypes.object,
     };
   }
 
@@ -156,22 +160,22 @@ class WebReplayPlayer extends Component {
     this.onPlayerMouseUp = this.onPlayerMouseUp.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.overlayWidth = this.updateOverlayWidth();
     this.threadFront.ensureProcessed(
       this.onMissingRegions.bind(this),
       this.onUnprocessedRegions.bind(this)
     );
 
-    this.toolbox.getPanelWhenReady("webconsole").then((panel) => {
-      const consoleFrame = panel.hud.ui;
-      consoleFrame.on("message-hover", this.onConsoleMessageHover.bind(this));
-      consoleFrame.wrapper.subscribeToStore(this.onConsoleUpdate.bind(this));
-    });
+    const consoleFrame = this.console.hud.ui;
+    consoleFrame.on("message-hover", this.onConsoleMessageHover.bind(this));
+    consoleFrame.wrapper.subscribeToStore(this.onConsoleUpdate.bind(this));
 
-    this.toolbox.webReplayPlayer = this;
     this.threadFront.on("paused", this.onPaused.bind(this));
     this.threadFront.setOnEndpoint(this.onEndpoint.bind(this));
+
+    const description = await this.threadFront.getDescription();
+    this.setRecordingDescription(description);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -206,7 +210,11 @@ class WebReplayPlayer extends Component {
   }
 
   get console() {
-    return this.toolbox.getPanel("webconsole");
+    return this.toolbox.getPanel("console");
+  }
+
+  get debugger() {
+    return this.toolbox.getPanel("debugger");
   }
 
   get threadFront() {
@@ -251,10 +259,8 @@ class WebReplayPlayer extends Component {
       let pausedMessage;
       if (executionPoint) {
         pausedMessage = this.state.messages
-          .filter((message) => message.executionPoint)
-          .find((message) =>
-            pointEquals(message.executionPoint, executionPoint)
-          );
+          .filter(message => message.executionPoint)
+          .find(message => pointEquals(message.executionPoint, executionPoint));
       } else {
         executionPoint = this.state.executionPoint;
       }
@@ -283,12 +289,10 @@ class WebReplayPlayer extends Component {
 
     if (visibleMessages != this.state.visibleMessages) {
       let messages = visibleMessages
-        .map((id) => messagesById.get(id))
-        .filter(
-          (message) => message.source == "console-api" || isError(message)
-        );
+        .map(id => messagesById.get(id))
+        .filter(message => message.source == "console-api" || isError(message));
 
-      messages = sortBy(messages, (message) => getMessageProgress(message));
+      messages = sortBy(messages, message => getMessageProgress(message));
 
       this.setState({ messages, visibleMessages, shouldAnimate: false });
     }
@@ -318,6 +322,8 @@ class WebReplayPlayer extends Component {
   }
 
   scrollToMessage(message) {
+    // This will be safe to fix when we correct console scrolling
+    return;
     if (!message) {
       return;
     }
@@ -372,16 +378,14 @@ class WebReplayPlayer extends Component {
   }
 
   async previewLocation(closestMessage) {
-    const dbg = await this.toolbox.loadTool("jsdebugger");
     const location = getMessageLocation(closestMessage);
     if (location) {
-      dbg.previewPausedLocation(location);
+      this.debugger.previewPausedLocation(location);
     }
   }
 
   async clearPreviewLocation() {
-    const dbg = await this.toolbox.loadTool("jsdebugger");
-    dbg.clearPreviewPausedLocation();
+    this.debugger.clearPreviewPausedLocation();
   }
 
   async onProgressBarMouseMove(e) {
@@ -710,7 +714,7 @@ class WebReplayPlayer extends Component {
         zIndex: `${index + 100}`,
       },
       title: getFormatStr("jumpMessage2", frameLocation),
-      onClick: (e) => {
+      onClick: e => {
         e.preventDefault();
         e.stopPropagation();
         this.seek(message.executionPoint);
