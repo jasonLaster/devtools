@@ -34,19 +34,33 @@ const React = require("react");
 const ReactDOM = require("react-dom");
 import Toolbox from "./Toolbox";
 import SplitBox from "devtools/client/shared/components/splitter/SplitBox";
+import { connect } from "react-redux";
+import { actions } from "../actions";
+import { selectors } from "../reducers";
 
-export default class App extends React.Component {
+function setTheme(theme) {
+  document.body.parentElement.className = theme;
+}
+
+class App extends React.Component {
   state = {
     orientation: "bottom",
   };
 
   componentDidMount() {
-    // for testing `app.setState({orientation: "left"})`
-    window.app = this;
+    const { theme } = this.props;
+    setTheme(theme);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { theme } = this.props;
+    if (theme !== prevProps.theme) {
+      setTheme(theme);
+    }
   }
 
   render() {
-    const { initialize } = this.props;
+    const { initialize, theme } = this.props;
     const { orientation } = this.state;
 
     const graphics = (
@@ -90,3 +104,12 @@ export default class App extends React.Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    theme: selectors.getTheme(state),
+  }),
+  {
+    updateTheme: actions.updateTheme,
+  }
+)(App);

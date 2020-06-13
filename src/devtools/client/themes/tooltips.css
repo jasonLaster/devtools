@@ -53,7 +53,7 @@
   --theme-arrowpanel-border-radius: 3.5px;
 }
 
-:root[platform="mac"].theme-light {
+:root[platform="mac"] .theme-light {
   --theme-arrowpanel-separator: hsla(210, 4%, 10%, 0.14);
 }
 
@@ -320,10 +320,10 @@ strong {
    */
 }
 
-:root[platform="mac"].theme-light
+:root[platform="mac"] .theme-light
   .tooltip-container[type="doorhanger"]
   > .tooltip-panel,
-:root[platform="mac"].theme-light
+:root[platform="mac"] .theme-light
   .tooltip-container[type="doorhanger"]
   > .tooltip-arrow::before {
   border: none;
