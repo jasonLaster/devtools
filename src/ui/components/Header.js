@@ -43,6 +43,10 @@ class Header extends React.Component {
     Headway.init({ selector: "#headway", account: "J1Dlp7" });
   }
 
+  showWhatsNew = () => {
+    Headway?.show();
+  };
+
   renderAvatars() {
     const { user, getActiveUsers } = this.props;
 
@@ -79,7 +83,7 @@ class Header extends React.Component {
         <div className="logo"></div>
         <div id="status"></div>
         <div className="links">
-          <a id="headway" onClick={Headway.show}>
+          <a id="headway" onClick={this.showWhatsNew}>
             What's new
           </a>
           {this.renderAvatars()}
