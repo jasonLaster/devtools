@@ -107,3 +107,40 @@ export function seek(point, time, hasFrames) {
     ThreadFront.timeWarp(point, time, hasFrames);
   };
 }
+
+export function updateTooltip(e) {
+  return async () => {
+    // const { hoverTime, recordingDuration, setTimelineState, updateTooltip } = this.props;
+    if (!recordingDuration) {
+      return;
+    }
+
+    const mouseTime = this.getMouseTime(e);
+
+    if (hoverTime != mouseTime) {
+      setTimelineState({ hoverTime: mouseTime });
+      // updateTooltip({ left: this. });
+
+      dispatch({
+        type: "update_tooltip",
+        tooltip: { left: getPixelOffset({ time: mouseTime, overlayWidth, zoom }) },
+      });
+
+      try {
+        const paintPoint = getMostRecentPaintPoint(mouseTime);
+        if (!paintPoint) return;
+
+        const { point, paintHash } = paintPoint;
+        const screen = await screenshotCache.getScreenshotForTooltip(point, paintHash);
+
+        // this.props.hoverTime may have changed, but it may also still result in the same paintHash
+        const currentPaintPoint = getMostRecentPaintPoint(this.props.hoverTime);
+        if (!currentPaintPoint) return;
+        const { paintHash: currentPaintHash } = currentPaintPoint;
+        if (currentPaintHash === paintHash) {
+          updateTooltip({ screen, left: getPixelOffset({ time: hoverTime, overlayWidth, zoom }) });
+        }
+      } catch {}
+    }
+  };
+}
