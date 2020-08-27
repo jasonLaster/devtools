@@ -5,6 +5,7 @@ function initialAppState() {
     theme: "theme-light",
     splitConsoleOpen: prefs.splitConsole,
     selectedPanel: prefs.selectedPanel,
+    devtoolsOpen: true,
     tooltip: null,
   };
 }
@@ -17,6 +18,10 @@ export default function update(state = initialAppState(), action) {
 
     case "set_selected_panel": {
       return { ...state, selectedPanel: action.panel };
+    }
+
+    case "set_devtools_open": {
+      return { ...state, devtoolsOpen: action.devtoolsOpen };
     }
 
     case "set_split_console": {
@@ -46,4 +51,8 @@ export function isSplitConsoleOpen(state) {
 
 export function getSelectedPanel(state) {
   return state.app.selectedPanel;
+}
+
+export function isDevtoolsOpen(state) {
+  return state.app.devtoolsOpen;
 }

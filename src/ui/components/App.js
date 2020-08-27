@@ -50,13 +50,15 @@ class App extends React.Component {
     );
   }
 
-  render() {
-    const { initialize, commentVisible, hideComments, updateTimelineDimensions } = this.props;
+  renderSplitBox() {
     const { orientation } = this.state;
 
-    const toolbox = <Toolbox initialize={initialize} />;
+    const { updateTimelineDimensions, initialize } = this.props;
 
     let startPanel, endPanel;
+    const toolbox = <Toolbox initialize={initialize} />;
+    const vert = orientation != "bottom";
+
     if (orientation == "bottom" || orientation == "right") {
       startPanel = this.renderViewer(toolbox);
       endPanel = toolbox;
@@ -65,25 +67,43 @@ class App extends React.Component {
       endPanel = this.renderViewer(toolbox);
     }
 
-    const vert = orientation != "bottom";
+    return (
+      <SplitBox
+        style={{ width: "100vw", overflow: "hidden" }}
+        splitterSize={1}
+        initialSize="50%"
+        minSize="20%"
+        maxSize="80%"
+        vert={vert}
+        onMove={num => updateTimelineDimensions()}
+        startPanel={startPanel}
+        endPanelControl={false}
+        endPanel={endPanel}
+      />
+    );
+  }
+
+  renderSimpleViewer() {
+    const { initialize } = this.props;
+    const toolbox = <Toolbox initialize={initialize} />;
+
+    return (
+      <div>
+        {this.renderViewer(toolbox)}
+        {toolbox}
+      </div>
+    );
+  }
+
+  render() {
+    const { commentVisible, hideComments, devtoolsOpen } = this.props;
 
     return (
       <>
         <Header />
-        <Comments />
+        {devtoolsOpen && <Comments />}
         {commentVisible && <div className="app-mask" onClick={() => hideComments()} />}
-        <SplitBox
-          style={{ width: "100vw", overflow: "hidden" }}
-          splitterSize={1}
-          initialSize="50%"
-          minSize="20%"
-          maxSize="80%"
-          vert={vert}
-          onMove={num => updateTimelineDimensions()}
-          startPanel={startPanel}
-          endPanelControl={false}
-          endPanel={endPanel}
-        />
+        {devtoolsOpen ? this.renderSplitBox() : this.renderSimpleViewer()}
       </>
     );
   }
@@ -94,6 +114,7 @@ export default connect(
     theme: selectors.getTheme(state),
     tooltip: selectors.getTooltip(state),
     commentVisible: selectors.commentVisible(state),
+    devtoolsOpen: selectors.isDevtoolsOpen(state),
   }),
   {
     updateTheme: actions.updateTheme,

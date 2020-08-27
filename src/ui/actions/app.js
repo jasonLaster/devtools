@@ -13,3 +13,7 @@ export function setSplitConsole(open) {
 export function setSelectedPanel(panel) {
   return { type: "set_selected_panel", panel };
 }
+
+export function setDevtoolsOpen(devtoolsOpen) {
+  return { type: "set_devtools_open", devtoolsOpen };
+}

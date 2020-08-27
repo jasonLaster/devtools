@@ -7,6 +7,9 @@
   --toolbox-background: #f9f9fa;
   z-index: 1; /* Draw toolbox in front of the highlighter overlay. */
 }
+#toolbox.closed {
+  overflow: initial;
+}
 
 #toolbox-border {
   height: 0px;
@@ -32,6 +35,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+#toolbox-contents.closed {
+  display: none;
 }
 
 /* Split Console styles */

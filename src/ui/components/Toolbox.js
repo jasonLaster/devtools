@@ -350,8 +350,11 @@ class Toolbox extends React.Component {
   }
 
   renderToolbar() {
-    const { selectedPanel } = this.props;
+    const { selectedPanel, devtoolsOpen } = this.props;
 
+    if (!devtoolsOpen) {
+      return null;
+    }
     return (
       <div id="toolbox-toolbar">
         <NodePicker toolbox={this} />
@@ -418,58 +421,69 @@ class Toolbox extends React.Component {
     };
   }
 
-  render() {
-    const { selectedPanel, splitConsoleOpen } = this.props;
+  renderContents() {
+    const { selectedPanel, splitConsoleOpen, devtoolsOpen } = this.props;
+    if (!devtoolsOpen) {
+      return null;
+    }
+
     return (
-      <div id="toolbox" className={`${selectedPanel}`}>
+      <div
+        id="toolbox-contents"
+        className={classnames("", {
+          splitConsole: selectedPanel != "console" && splitConsoleOpen,
+        })}
+      >
+        <SplitBox
+          style={{ width: "100vw", overflow: "hidden" }}
+          {...this.getSplitBoxDimensions()}
+          splitterSize={1}
+          vert={false}
+          onResizeEnd={num => {}}
+          startPanel={
+            <div className="toolbox-top-panels">
+              <div
+                className={classnames("toolbox-panel", {
+                  active: selectedPanel == "debugger",
+                })}
+                id="toolbox-content-debugger"
+              >
+                {this.renderDebugger()}
+              </div>
+              <div
+                className={classnames("toolbox-panel theme-body", {
+                  active: selectedPanel == "inspector",
+                })}
+                id="toolbox-content-inspector"
+              >
+                {this.renderInspector()}
+              </div>
+            </div>
+          }
+          endPanelControl={false}
+          endPanel={
+            <div className="toolbox-bottom-panels" style={{ overflow: "hidden" }}>
+              <div
+                className={classnames("toolbox-panel", {
+                  active: selectedPanel == "console" || splitConsoleOpen,
+                })}
+                id="toolbox-content-console"
+              />
+            </div>
+          }
+        />
+      </div>
+    );
+  }
+
+  render() {
+    const { selectedPanel, devtoolsOpen } = this.props;
+    return (
+      <div id="toolbox" className={classnames(`${selectedPanel}`, { closed: !devtoolsOpen })}>
         <div id="toolbox-border"></div>
         <div id="toolbox-timeline">{this.renderTimeline()}</div>
         {this.renderToolbar()}
-        <div
-          id="toolbox-contents"
-          className={classnames("", {
-            splitConsole: selectedPanel != "console" && splitConsoleOpen,
-          })}
-        >
-          <SplitBox
-            style={{ width: "100vw", overflow: "hidden" }}
-            {...this.getSplitBoxDimensions()}
-            splitterSize={1}
-            vert={false}
-            onResizeEnd={num => {}}
-            startPanel={
-              <div className="toolbox-top-panels">
-                <div
-                  className={classnames("toolbox-panel", {
-                    active: selectedPanel == "debugger",
-                  })}
-                  id="toolbox-content-debugger"
-                >
-                  {this.renderDebugger()}
-                </div>
-                <div
-                  className={classnames("toolbox-panel theme-body", {
-                    active: selectedPanel == "inspector",
-                  })}
-                  id="toolbox-content-inspector"
-                >
-                  {this.renderInspector()}
-                </div>
-              </div>
-            }
-            endPanelControl={false}
-            endPanel={
-              <div className="toolbox-bottom-panels" style={{ overflow: "hidden" }}>
-                <div
-                  className={classnames("toolbox-panel", {
-                    active: selectedPanel == "console" || splitConsoleOpen,
-                  })}
-                  id="toolbox-content-console"
-                />
-              </div>
-            }
-          />
-        </div>
+        {this.renderContents()}
       </div>
     );
   }
@@ -492,6 +506,7 @@ export default connect(
   state => ({
     selectedPanel: selectors.getSelectedPanel(state),
     splitConsoleOpen: selectors.isSplitConsoleOpen(state),
+    devtoolsOpen: selectors.isDevtoolsOpen(state),
   }),
   {
     setSplitConsole: actions.setSplitConsole,
