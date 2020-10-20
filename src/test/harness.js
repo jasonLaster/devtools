@@ -277,6 +277,11 @@ function waitForMessage(text, extraSelector) {
   });
 }
 
+function clickMessageLocationLink(msg) {
+  console.log('>>> clicking')
+  msg.querySelector(".frame-link a").click()
+}
+
 async function warpToMessage(text) {
   const msg = await waitForMessage(text);
   const warpButton = msg.querySelector(".rewind") || msg.querySelector(".fast-forward");
@@ -552,7 +557,6 @@ const testCommands = {
   selectConsole,
   selectDebugger,
   selectInspector,
-  dbg,
   assert,
   finish,
   waitForTime,
@@ -580,6 +584,7 @@ const testCommands = {
   checkEvaluateInTopFrame,
   waitForScopeValue,
   toggleBlackboxSelectedSource,
+  clickMessageLocationLink,
   findMessages,
   waitForMessage,
   warpToMessage,
@@ -613,9 +618,12 @@ const testCommands = {
   checkAppliedRules,
 };
 
-module.exports = mapValues(testCommands, (command, name) => {
+const commands = mapValues(testCommands, (command, name) => {
   return (...args) => {
     console.log(name, ...args);
     return command(...args);
   };
 });
+
+
+module.exports = { ...commands, dbg, dbgSelectors }
