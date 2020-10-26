@@ -118,7 +118,7 @@ class Editor extends PureComponent {
 
     // disables the default search shortcuts
     // $FlowIgnore
-    editor._initShortcuts = () => {};
+    editor._initShortcuts = () => { };
 
     const node = ReactDOM.findDOMNode(this);
     if (node instanceof HTMLElement) {

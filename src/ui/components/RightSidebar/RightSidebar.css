@@ -44,3 +44,13 @@
   outline: 0;
   background-color: transparent;
 }
+
+.right-sidebar .popup {
+  position: absolute;
+  right: 52px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: white;
+  background: var(--theme-icon-color);
+  transition: 200ms;
+}
