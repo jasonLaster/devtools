@@ -6,11 +6,14 @@
 
 // React & Redux
 const { Component } = require("react");
+const { connect } = require("react-redux");
 const { createFactory } = require("react");
 const PropTypes = require("prop-types");
 
 const actions = require("devtools/client/webconsole/actions/index");
 const { l10n } = require("devtools/client/webconsole/utils/messages");
+const { getFilteredMessagesCount } = require("devtools/client/webconsole/selectors/messages");
+const { getAllFilters } = require("devtools/client/webconsole/selectors/filters");
 
 // Additional Components
 const MenuButton = createFactory(require("devtools/client/shared/components/menu/MenuButton"));
@@ -28,10 +31,81 @@ class ConsoleSettings extends Component {
     };
   }
 
-  renderMenuItems() {
-    const { dispatch, timestampsVisible, filter } = this.props;
+  getLabel(baseLabel, filterKey) {
+    const { filters, filteredMessagesCount } = this.props;
 
+    const count = filteredMessagesCount[filterKey];
+    if (filters[filterKey] || count === 0) {
+      return baseLabel;
+    }
+    return `${baseLabel} (${count})`;
+  }
+
+  renderMenuItems() {
+    const { timestampsVisible, filters, filterToggle, timestampsToggle } = this.props;
     const items = [];
+
+    items.push(
+      MenuItem({
+        key: "webconsole-console-settings-filter-errors",
+        checked: filters[FILTERS.ERROR],
+        className: "menu-item",
+        label: this.getLabel("Show Errors", FILTERS.ERROR),
+        onClick: () => filterToggle(FILTERS.ERROR),
+      })
+    );
+
+    items.push(
+      MenuItem({
+        key: "webconsole-console-settings-filter-warnings",
+        checked: filters[FILTERS.WARN],
+        className: "menu-item",
+        label: this.getLabel("Show Warnings", FILTERS.WARN),
+        onClick: () => filterToggle(FILTERS.WARN),
+      })
+    );
+
+    items.push(
+      MenuItem({
+        key: "webconsole-console-settings-filter-logs",
+        checked: filters[FILTERS.LOG],
+        className: "menu-item",
+        label: this.getLabel("Show Logs", FILTERS.LOG),
+        onClick: () => filterToggle(FILTERS.LOG),
+      })
+    );
+
+    items.push(
+      MenuItem({
+        key: "webconsole-console-settings-filter-info",
+        checked: filters[FILTERS.INFO],
+        className: "menu-item",
+        label: this.getLabel("Show Info", FILTERS.INFO),
+        onClick: () => filterToggle(FILTERS.INFO),
+      })
+    );
+
+    items.push(
+      MenuItem({
+        key: "webconsole-console-settings-filter-debug",
+        checked: filters[FILTERS.DEBUG],
+        className: "menu-item",
+        label: this.getLabel("Show Debug", FILTERS.DEBUG),
+        onClick: () => filterToggle(FILTERS.DEBUG),
+      })
+    );
+
+    // Filter for node modules
+    items.push(
+      MenuItem({
+        key: "webconsole-console-settings-add-node-module-messages",
+        checked: !filters[FILTERS.NODEMODULES],
+        className: "menu-item webconsole-console-settings-add-node-module-messages",
+        label: l10n.getStr("webconsole.console.settings.menu.item.nodeModuleMessages.label"),
+        tooltip: l10n.getStr("webconsole.console.settings.menu.item.nodeModuleMessages.tooltip"),
+        onClick: () => filterToggle(FILTERS.NODEMODULES),
+      })
+    );
 
     // Timestamps
     items.push(
@@ -41,19 +115,7 @@ class ConsoleSettings extends Component {
         className: "menu-item webconsole-console-settings-menu-item-timestamps",
         label: l10n.getStr("webconsole.console.settings.menu.item.timestamps.label"),
         tooltip: l10n.getStr("webconsole.console.settings.menu.item.timestamps.tooltip"),
-        onClick: () => dispatch(actions.timestampsToggle()),
-      })
-    );
-
-    // Timestamps
-    items.push(
-      MenuItem({
-        key: "webconsole-console-settings-add-node-module-messages",
-        checked: !filter[FILTERS.NODEMODULES],
-        className: "menu-item webconsole-console-settings-add-node-module-messages",
-        label: l10n.getStr("webconsole.console.settings.menu.item.nodeModuleMessages.label"),
-        tooltip: l10n.getStr("webconsole.console.settings.menu.item.nodeModuleMessages.tooltip"),
-        onClick: () => dispatch(actions.filterToggle(FILTERS.NODEMODULES)),
+        onClick: timestampsToggle,
       })
     );
 
@@ -75,4 +137,13 @@ class ConsoleSettings extends Component {
   }
 }
 
-module.exports = ConsoleSettings;
+module.exports = connect(
+  state => ({
+    filters: getAllFilters(state),
+    filteredMessagesCount: getFilteredMessagesCount(state),
+  }),
+  {
+    filterToggle: actions.filterToggle,
+    timestampsToggle: actions.timestampsToggle,
+  }
+)(ConsoleSettings);
