@@ -250,10 +250,10 @@ class EventListeners extends Component {
 
     return (
       <div className="event-listeners">
-        {/* <div className="event-search-container">
+        <div className="event-search-container">
           {this.renderSearchInput()}
           {this.renderClearSearchButton()}
-        </div> */}
+        </div>
         <div className="event-listeners-content">
           {searchText ? this.renderSearchResultsList() : this.renderCategoriesList()}
         </div>

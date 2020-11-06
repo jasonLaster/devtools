@@ -100,8 +100,8 @@
 
 .event-search-container {
   display: flex;
-  border: 1px solid transparent;
-  border-block-end: 1px solid var(--theme-splitter-color);
+  margin-bottom: 4px;
+  position: relative;
 }
 
 .event-search-form {
@@ -113,20 +113,19 @@
   flex-grow: 1;
   margin: 0;
   font-size: inherit;
-  background-color: var(--theme-sidebar-background);
   border: 0;
   outline: 0;
   line-height: 16px;
-  padding-block: 2px;
   color: var(--theme-body-color);
-  background-image: url("chrome://devtools/skin/images/filter-small.svg");
-  background-position-x: 4px;
-  background-position-y: 50%;
-  background-repeat: no-repeat;
-  background-size: 12px;
   -moz-context-properties: fill;
   fill: var(--theme-icon-dimmed-color);
   text-align: match-parent;
+  background-color: #EEE;
+  border-radius: 4px;
+  background-color: #EEE;
+  line-height: 16px;
+  padding: 8px;
+  border-radius: 4px;
 }
 
 :root:dir(ltr) .event-search-input {
@@ -135,12 +134,6 @@
    * direction manually (e.g. via Ctrl+Shift). */
   padding-left: 19px;
   padding-right: 12px;
-}
-
-:root:dir(rtl) .event-search-input {
-  background-position-x: right 4px;
-  padding-right: 19px;
-  padding-left: 12px;
 }
 
 .category-label {
@@ -152,10 +145,13 @@
   color: var(--theme-comment);
 }
 
-.event-search-container:focus-within {
+.event-search-input:focus {
   border: 1px solid var(--theme-highlight-blue);
+  padding: 7px;
 }
 
 .devtools-searchinput-clear {
+  position: absolute;
+  right: 0px;
   margin-inline-end: 8px;
 }

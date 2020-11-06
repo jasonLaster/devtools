@@ -4,7 +4,8 @@
 "use strict";
 
 // React & Redux
-const { Component, createFactory } = require("react");
+const React = require("react");
+const { Component, createFactory, useState } = React;
 const { connect } = require("react-redux");
 const dom = require("react-dom-factories");
 
@@ -26,6 +27,7 @@ const { FILTERS, FILTERBAR_DISPLAY_MODES } = require("devtools/client/webconsole
 
 // Additional Components
 const FilterButton = require("devtools/client/webconsole/components/FilterBar/FilterButton");
+const { Events } = require("devtools/client/webconsole/components/FilterBar/Events");
 const ConsoleSettings = createFactory(
   require("devtools/client/webconsole/components/FilterBar/ConsoleSettings")
 );
@@ -286,6 +288,7 @@ class FilterBar extends Component {
         isWide && separator,
         isWide && filtersConfigBar,
         separator,
+        <Events />,
         settingsButton
       ),
     ];
@@ -322,7 +325,7 @@ function mapStateToProps(state) {
   };
 }
 
-module.exports = connect(mapStateToProps, {
+export default connect(mapStateToProps, {
   closeSplitConsole: actions.closeSplitConsole,
   filterBarDisplayModeSet: actions.filterBarDisplayModeSet,
   messagesClearEvaluations: actions.messagesClearEvaluations,
