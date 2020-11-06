@@ -81,11 +81,7 @@
 }
 
 .event-listeners-list .event-listener-event {
-  margin-inline-start: 40px;
-}
-
-.event-search-results-list .event-listener-event {
-  padding-inline: 20px;
+  margin-inline-start: 20px;
 }
 
 .event-listener-name {
@@ -94,8 +90,7 @@
 }
 
 .event-listener-event input {
-  margin-inline: 0 4px;
-  margin-block: 0;
+  margin-inline-end: 4px;
 }
 
 .event-search-container {
@@ -126,14 +121,6 @@
   line-height: 16px;
   padding: 8px;
   border-radius: 4px;
-}
-
-:root:dir(ltr) .event-search-input {
-  /* Be explicit about left/right direction to prevent the text/placeholder
-   * from overlapping the background image when the user changes the text
-   * direction manually (e.g. via Ctrl+Shift). */
-  padding-left: 19px;
-  padding-right: 12px;
 }
 
 .category-label {

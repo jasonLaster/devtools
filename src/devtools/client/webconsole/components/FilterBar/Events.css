@@ -1,3 +1,7 @@
+.devtools-toolbar .event-breakpoints {
+  margin: 0 2px;
+}
+
 .devtools-toolbar .dropdown-wrapper {
   display: flex;
   flex-direction: column-reverse;
@@ -17,6 +21,8 @@
 .devtools-toolbar button.expand-dropdown {
   padding: 4px;
   border: none;
+  display: flex;
+  align-items: center;
 }
 
 .devtools-toolbar button.expand-dropdown .img:not(:last-child) {
@@ -33,6 +39,6 @@
   overflow-y: auto;
 }
 
-.event-logpoints *:focus:not(:focus-visible) {
+.event-breakpoints *:focus:not(:focus-visible) {
   outline: none
 }

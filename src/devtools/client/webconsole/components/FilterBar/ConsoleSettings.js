@@ -27,7 +27,6 @@ class ConsoleSettings extends Component {
   static get propTypes() {
     return {
       timestampsVisible: PropTypes.bool.isRequired,
-      filter: PropTypes.object.isRequired,
     };
   }
 

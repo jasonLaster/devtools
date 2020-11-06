@@ -228,8 +228,8 @@ class FilterBar extends Component {
         separator,
         searchBox,
         isWide && separator,
-        separator,
         <Events />,
+        separator,
         settingsButton
       ),
     ];
