@@ -94,6 +94,13 @@ class ConsoleSettings extends Component {
       })
     );
 
+    items.push(
+      MenuItem({
+        key: "separator",
+        role: "menuseparator",
+      })
+    );
+
     // Filter for node modules
     items.push(
       MenuItem({

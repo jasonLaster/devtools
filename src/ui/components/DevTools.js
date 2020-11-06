@@ -117,7 +117,6 @@ function DevTools({
     return null;
   }
 
-  //hi
   if (loading < 100) {
     return <RecordingLoadingScreen />;
   }

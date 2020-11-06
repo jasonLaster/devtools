@@ -174,28 +174,11 @@ class EventListeners extends Component {
     const indeterminate = !checked && events.some(({ id }) => activeEventListeners.includes(id));
 
     return (
-      <div className="event-listener-header">
-        <button
-          className="event-listener-expand"
-          onClick={() => this.onCategoryToggle(category.name)}
-        >
+      <div className="event-listener-header" onClick={() => this.onCategoryToggle(category.name)}>
+        <button className="event-listener-expand">
           <AccessibleImage className={classnames("arrow", { expanded })} />
         </button>
         <label className="event-listener-label">
-          <input
-            type="checkbox"
-            value={category.name}
-            onChange={e => {
-              this.onCategoryClick(
-                category,
-                // Clicking an indeterminate checkbox should always have the
-                // effect of disabling any selected items.
-                indeterminate ? false : e.target.checked
-              );
-            }}
-            checked={checked}
-            ref={el => el && (el.indeterminate = indeterminate)}
-          />
           <span className="event-listener-category">{category.name}</span>
         </label>
       </div>
