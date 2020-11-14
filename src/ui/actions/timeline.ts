@@ -179,3 +179,11 @@ export function seek(point: ExecutionPoint, time: number, hasFrames: boolean): U
     ThreadFront.timeWarp(point, time, hasFrames);
   };
 }
+
+export function highlightLocation(location: Location) {
+  return { type: "set_timeline_state", state: { highlightedLocation: location } };
+}
+
+export function unhighlightLocation() {
+  return { type: "set_timeline_state", state: { highlightedLocation: null } };
+}
