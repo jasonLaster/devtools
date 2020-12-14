@@ -125,25 +125,26 @@ export class Timeline extends Component {
     return null;
   };
 
-  findMessage(message) {
-    const outputNode = document.getElementById("toolbox-content-console");
-    return outputNode.querySelector(`.message[data-message-id="${message.id}"]`);
-  }
-
   scrollToMessage(message) {
     if (!message) {
       return;
     }
 
-    const element = this.findMessage(message);
     const outputNode = document.getElementById("toolbox-content-console");
+    if (!outputNode) {
+      return;
+    }
 
-    if (element) {
-      const consoleHeight = outputNode.getBoundingClientRect().height;
-      const elementTop = element.getBoundingClientRect().top;
-      if (elementTop < 30 || elementTop + 50 > consoleHeight) {
-        element.scrollIntoView({ block: "center", behavior: "smooth" });
-      }
+    const element = outputNode.querySelector(`.message[data-message-id="${message.id}"]`);
+
+    if (!element) {
+      return;
+    }
+
+    const consoleHeight = outputNode.getBoundingClientRect().height;
+    const elementTop = element.getBoundingClientRect().top;
+    if (elementTop < 30 || elementTop + 50 > consoleHeight) {
+      element.scrollIntoView({ block: "center", behavior: "smooth" });
     }
   }
 
