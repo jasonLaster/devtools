@@ -141,6 +141,7 @@ function createTestScript({ path }) {
 }
 
 let failures = [];
+let successes = [];
 
 async function runTest(path, local, timeout = 60, env = {}) {
   const testURL = env.RECORD_REPLAY_TEST_URL || "";
@@ -226,6 +227,12 @@ async function runTest(path, local, timeout = 60, env = {}) {
     spawnChecked("echo", [msg], { stdio: "inherit" });
   }
 
+  function logSuccess() {
+    const url = `https://replay.io/view?id=${recordingId}&test=${local}`;
+    console.log(`[${elapsedTime()}] Test Passed: ${url}`);
+    successes.push(`${local}: ${url}`);
+  }
+
   gecko.stdout.on("data", processOutput);
   gecko.stderr.on("data", processOutput);
 
@@ -239,6 +246,8 @@ async function runTest(path, local, timeout = 60, env = {}) {
       } else if (!passed) {
         logFailure("Exited without passing test");
       }
+    } else {
+      logSuccess();
     }
     resolve();
   });
@@ -268,6 +277,7 @@ async function runTest(path, local, timeout = 60, env = {}) {
     console.log(`[${elapsedTime()}] Had ${failures.length} test failures.`);
     failures.forEach(failure => console.log(failure));
   } else {
+    successes.forEach(success => console.log(success));
     console.log(`[${elapsedTime()}] All tests passed.`);
   }
 
