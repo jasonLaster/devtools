@@ -9,7 +9,7 @@ import TranscriptEntry from "./TranscriptEntry/index";
 import "./CommentsPanel.css";
 
 function CommentsPanel({ recordingId, clickEvents, showClicks }) {
-  const { comments } = hooks.useGetComments(recordingId);
+  const { comments } = hooks.useGetComments();
 
   // We allow the panel to render its entries whether or not the
   // comments have loaded yet. This optimistically assumes that eventually the

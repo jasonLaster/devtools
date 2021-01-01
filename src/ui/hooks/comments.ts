@@ -1,4 +1,3 @@
-import { RecordingId } from "@recordreplay/protocol";
 import { gql, useQuery, useMutation, ApolloError } from "@apollo/client";
 
 interface Comment {
@@ -15,8 +14,8 @@ interface Comment {
 }
 
 const GET_COMMENTS = gql`
-  query GetComments($recordingId: uuid) {
-    comments(where: { recording_id: { _eq: $recordingId } }) {
+  query GetComments {
+    comments {
       id
       content
       created_at
@@ -63,12 +62,17 @@ const DELETE_COMMENT = gql`
   }
 `;
 
-export function useGetComments(
-  recordingId: RecordingId
-): { comments: [Comment]; loading: boolean; error?: ApolloError } {
-  const { data, loading, error } = useQuery(GET_COMMENTS, {
-    variables: { recordingId },
+function useUnAuthenticatedQuery(query: DocumentNode, variables = {}) {
+  return useQuery(query, {
+    variables,
+    context: {
+      headers: { noAuth: true },
+    },
   });
+}
+
+export function useGetComments(): { comments: [Comment]; loading: boolean; error?: ApolloError } {
+  const { data, loading, error } = useUnAuthenticatedQuery(GET_COMMENTS, {});
 
   // This gives us some basic logging for when there's a problem
   // while fetching the comments.
