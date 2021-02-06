@@ -282,6 +282,11 @@ class Editor extends PureComponent {
       return;
     }
 
+    // Don't let the user add a breakpoint on an empty line
+    if (ev.target.closest(".empty-line")) {
+      return;
+    }
+
     return addBreakpointAtLine(cx, sourceLine, ev.altKey, ev.shiftKey);
   };
 
