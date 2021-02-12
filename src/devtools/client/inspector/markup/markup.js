@@ -54,7 +54,7 @@ class MarkupView {
   }
 
   updateIsInspectorVisible = () => {
-    const visible = selectors.isInspectorSelected(this.store.getState());
+    const visible = selectors.isInspectorVisible(this.store.getState());
     if (visible !== this.isInspectorVisible) {
       this.isInspectorVisible = visible;
       if (this.isInspectorVisible && this.isLoadingPostponed) {
