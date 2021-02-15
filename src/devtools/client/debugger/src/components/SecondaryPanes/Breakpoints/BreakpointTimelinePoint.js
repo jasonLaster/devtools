@@ -72,7 +72,12 @@ function BreakpointTimelinePoint({
       location: breakpoint.location,
     });
 
-  const onMouseLeave = () => setHoveredPoint(null);
+  const onMouseLeave = e => {
+    if (e.relatedTarget.closest(".breakpoint-panel")) {
+      return;
+    }
+    setHoveredPoint(null);
+  };
 
   return (
     <div
