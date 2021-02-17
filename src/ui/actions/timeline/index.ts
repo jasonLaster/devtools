@@ -6,7 +6,6 @@ import {
   getGraphicsAtTime,
   paintGraphics,
   mostRecentPaintOrMouseEvent,
-  nextPaintOrMouseEvent,
   nextPaintEvent,
   paintGraphicsAtTime,
   previousPaintEvent,
@@ -14,14 +13,14 @@ import {
   gPaintPoints,
 } from "protocol/graphics";
 import { selectors } from "ui/reducers";
-import { UIStore, UIThunkAction } from ".";
+import { UIStore, UIThunkAction } from "..";
 import { Action } from "redux";
 import { PauseEventArgs, RecordingDescription } from "protocol/thread/thread";
 import { TimelineState, Tooltip, ZoomRegion, HoveredPoint } from "ui/state/timeline";
 import { query } from "ui/utils/apolloClient";
 import { gql } from "@apollo/client";
 import { getTest } from "ui/utils/environment";
-
+import { playback } from "./playback";
 export type SetTimelineStateAction = Action<"set_timeline_state"> & {
   state: Partial<TimelineState>;
 };
@@ -258,6 +257,20 @@ export function togglePlayback(): UIThunkAction {
   };
 }
 
+export function stopPlayback(): UIThunkAction {
+  return ({ dispatch, getState }) => {
+    log(`StopPlayback`);
+
+    const playback = selectors.getPlayback(getState());
+
+    if (playback) {
+      dispatch(seekToTime(playback.time));
+    }
+
+    dispatch(setTimelineState({ playback: null }));
+  };
+}
+
 export function startPlayback(): UIThunkAction {
   return ({ dispatch, getState }) => {
     log(`StartPlayback`);
@@ -280,96 +293,10 @@ export function startPlayback(): UIThunkAction {
   };
 }
 
-export function stopPlayback(): UIThunkAction {
-  return ({ dispatch, getState }) => {
-    log(`StopPlayback`);
-
-    const playback = selectors.getPlayback(getState());
-
-    if (playback) {
-      dispatch(seekToTime(playback.time));
-    }
-
-    dispatch(setTimelineState({ playback: null }));
-  };
-}
-
 export function replayPlayback(): UIThunkAction {
   return ({ dispatch }) => {
     dispatch(seekToTime(0));
     dispatch(startPlayback());
-  };
-}
-
-function playback(startTime: number, endTime: number): UIThunkAction {
-  return async ({ dispatch, getState }) => {
-    let startDate = Date.now();
-    let currentDate = startDate;
-    let currentTime = startTime;
-    let nextGraphicsTime = nextPaintOrMouseEvent(currentTime)?.time || endTime;
-    let nextGraphicsPromise = getGraphicsAtTime(nextGraphicsTime, true);
-
-    const prepareNextGraphics = () => {
-      nextGraphicsTime = nextPaintOrMouseEvent(currentTime)?.time || endTime;
-      nextGraphicsPromise = getGraphicsAtTime(nextGraphicsTime, true);
-    };
-    const shouldContinuePlayback = () => selectors.getPlayback(getState());
-    prepareNextGraphics();
-
-    while (shouldContinuePlayback()) {
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      if (!shouldContinuePlayback()) {
-        return;
-      }
-
-      currentDate = Date.now();
-      currentTime = startTime + (currentDate - startDate);
-
-      if (currentTime > endTime) {
-        log(`FinishPlayback`);
-        dispatch(seekToTime(endTime));
-        return dispatch(setTimelineState({ currentTime: endTime, playback: null }));
-      }
-
-      dispatch({ type: "RESUME" });
-      dispatch(
-        setTimelineState({
-          currentTime,
-          playback: { startTime, startDate, time: currentTime },
-        })
-      );
-
-      if (currentTime >= nextGraphicsTime) {
-        try {
-          const { screen, mouse } = await nextGraphicsPromise;
-
-          if (!shouldContinuePlayback()) {
-            return;
-          }
-
-          // Playback may have stalled waiting for `nextGraphicsPromise` and would jump
-          // in the next iteration in order to catch up. To avoid jumps of more than
-          // 100 milliseconds, we reset `startTime` and `startDate` as if playback had
-          // been started right now.
-          if (Date.now() - currentDate > 100) {
-            startTime = currentTime;
-            startDate = Date.now();
-            dispatch(
-              setTimelineState({
-                currentTime,
-                playback: { startTime, startDate, time: currentTime },
-              })
-            );
-          }
-
-          if (screen) {
-            paintGraphics(screen, mouse);
-          }
-        } catch (e) {}
-
-        prepareNextGraphics();
-      }
-    }
   };
 }
 
