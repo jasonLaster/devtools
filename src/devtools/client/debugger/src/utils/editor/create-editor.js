@@ -5,7 +5,11 @@
 //
 
 import SourceEditor from "./source-editor";
+import { SourceEditor as MonacoSourceEditor } from "../monaco/source-editor";
+
 import { features, prefs } from "../prefs";
+
+console.log(MonacoSourceEditor);
 
 export function createEditor() {
   const gutters = ["breakpoints", "hit-markers", "CodeMirror-linenumbers"];

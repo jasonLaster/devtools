@@ -6,6 +6,7 @@ module.exports = {
     main: "./src/main",
     parserWorker: "./src/devtools/client/debugger/src/workers/parser/worker",
     searchWorker: "./src/devtools/client/debugger/src/workers/search/worker",
+    "editor.worker": "monaco-editor/esm/vs/editor/editor.worker.js",
   },
   devtool: "source-map",
   output: {
