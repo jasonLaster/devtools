@@ -4,12 +4,16 @@ import { Workspace } from "ui/types";
 
 const NO_WORKSPACES: Workspace[] = [];
 
-export function createWorkspaceAPI(workspaceId: string) {
+export function createWorkspaceAPI(workspaceId: string, scopes: string) {
   mutate({
     mutation: gql`
-    mutation CreateWorkspaceAPI($workspaceId: ID!) {
+      mutation CreateWorkspaceAPI($workspaceId: ID!) {
         createWorkspaceAPIKey(
-          input: { workspaceId: $workspaceId, label: "Sourcemap Upload API Key", scopes: "["write:sourcemap"]" }
+          input: {
+            workspaceId: $workspaceId
+            label: "Sourcemap Upload API Key"
+            scopes: ["write:sourcemap"]
+          }
         ) {
           success
         }

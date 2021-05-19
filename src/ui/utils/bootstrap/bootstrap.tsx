@@ -1,14 +1,19 @@
 import React, { ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
 import mixpanel from "mixpanel-browser";
 
-import App, { AppProps } from "ui/components/App";
+// Shows library
+import Library, { LibraryProps } from "ui/components/Library";
+
+// Shows uploadscreen, viewer, and devtools
+import DevTools, { DevToolsProps } from "ui/components/DevTools";
+
 import { PopupBlockedError } from "ui/components/shared/Error";
 import tokenManager from "ui/utils/tokenManager";
 import useToken from "ui/utils/useToken";
@@ -76,19 +81,33 @@ function ApolloWrapper({
   );
 }
 
-export function bootstrapApp(props: AppProps, context: Record<string, any>, store: UIStore) {
+export function bootstrapApp() {
   setupTelemetry(context);
 
   ReactDOM.render(
     <Router>
       <tokenManager.Auth0Provider>
-        <Provider store={store}>
+        <Route path="/view/:recordingId">
           <ApolloWrapper recordingId={context.recordingId}>
-            <App {...props} />
+            <DevTools {...props} />
           </ApolloWrapper>
-        </Provider>
+        </Route>
+        {/* We might want to be more creative and support as well */}
+        <Route path="/view/:recordingId/devtools"></Route>
+        <Route path="/view/:recordingId/viewer"></Route>
+        <Route path="/view/:recordingId/upload"></Route>
+
+        <Route path="/view/">
+          <ApolloWrapper>
+            <Library {...props} />
+          </ApolloWrapper>
+        </Route>
       </tokenManager.Auth0Provider>
     </Router>,
     document.querySelector("#app")
   );
 }
+
+// Will move to the DevTools render branch
+// We shouldnt need this for the library of Upload screen
+// <Provider store={store}>
