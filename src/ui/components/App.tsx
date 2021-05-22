@@ -111,11 +111,22 @@ function App({ theme, recordingId, modal, updateNarrowMode, setFontLoading }: Ap
   }
 
   return (
-    <>
-      {recordingId ? <DevToolsLoader recordingId={recordingId} /> : <Account />}
-      {modal ? <AppModal modal={modal} /> : null}
-      <AppErrors />
-    </>
+    <div
+      className="flex"
+      style={{
+        margin: "20px",
+        border: "1px solid #dcdcdc",
+        borderRadius: "4px",
+        width: "calc(100% - 40px)",
+      }}
+    >
+      <div style={{ width: "300px", borderRight: "1px solid #dcdcdc" }}></div>
+      <div>
+        {recordingId ? <DevToolsLoader recordingId={recordingId} /> : <Account />}
+        {modal ? <AppModal modal={modal} /> : null}
+        <AppErrors />
+      </div>
+    </div>
   );
 }
 

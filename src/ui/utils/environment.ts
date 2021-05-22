@@ -20,6 +20,10 @@ export function skipTelemetry() {
   return isTest() || isDevelopment();
 }
 
+export function isLandingPage() {
+  return true;
+}
+
 export function isDeployPreview() {
   return url.hostname.includes("replay-devtools.netlify.app");
 }

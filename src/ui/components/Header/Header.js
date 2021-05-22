@@ -13,6 +13,7 @@ import { isTest } from "ui/utils/environment";
 import ShareButton from "./ShareButton";
 import useAuth0 from "ui/utils/useAuth0";
 import IconWithTooltip from "ui/components/shared/IconWithTooltip";
+import { isLandingPage } from "ui/utils/environment";
 
 import "./Header.css";
 
@@ -108,6 +109,10 @@ function Header({ recordingId, sessionId, recordingTarget }) {
     }
     window.location = dashboardUrl;
   };
+
+  if (isLandingPage()) {
+    return null;
+  }
 
   if (loading) {
     return <div id="header"></div>;

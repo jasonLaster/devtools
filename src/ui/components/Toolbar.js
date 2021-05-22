@@ -3,6 +3,7 @@ import classnames from "classnames";
 import { connect } from "react-redux";
 import { actions } from "../actions";
 import { selectors } from "../reducers";
+import { isLandingPage } from "../utils/environment";
 
 import IconWithTooltip from "ui/components/shared/IconWithTooltip";
 
@@ -22,6 +23,10 @@ function Toolbar({
       setSelectedPrimaryPanel(panel);
     }
   };
+
+  if (isLandingPage()) {
+    return null;
+  }
 
   return (
     <div className="toolbox-toolbar-container">

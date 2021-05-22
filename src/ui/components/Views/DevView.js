@@ -12,18 +12,18 @@ import { installObserver } from "../../../protocol/graphics";
 import { updateTimelineDimensions } from "../../actions/timeline";
 import { prefs } from "../../utils/prefs";
 import { selectors } from "../../reducers";
+import { isLandingPage } from "../../utils/environment";
 
 function DevView({ updateTimelineDimensions, narrowMode, recordingTarget }) {
   const handleMove = num => {
     updateTimelineDimensions();
     prefs.toolboxHeight = `${num}px`;
   };
-
   useEffect(() => {
     installObserver();
   }, []);
 
-  if (narrowMode) {
+  if (narrowMode && !isLandingPage()) {
     return (
       <>
         <SplitBox

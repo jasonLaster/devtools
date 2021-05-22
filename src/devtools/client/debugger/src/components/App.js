@@ -11,6 +11,7 @@ import { prefs, features } from "../utils/prefs";
 import actions from "../actions";
 import A11yIntention from "./A11yIntention";
 import { ShortcutsModal } from "./ShortcutsModal";
+import { isLandingPage } from "ui/utils/environment";
 
 import {
   getSelectedSource,
@@ -223,6 +224,10 @@ class Debugger extends Component {
 
   renderLayout = () => {
     const { startPanelCollapsed } = this.props;
+
+    if (isLandingPage()) {
+      return this.renderEditorPane();
+    }
 
     return (
       <SplitBox
