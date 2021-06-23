@@ -4,6 +4,7 @@ import { Setting, Settings } from "./types";
 import "./SettingsNavigation.css";
 import { SettingsTabTitle } from "ui/state/app";
 import MaterialIcon from "../MaterialIcon";
+import { UserInfo } from "ui/hooks/users";
 
 interface SettingNavigationItemProps {
   setting: Setting;
@@ -13,6 +14,7 @@ interface SettingNavigationItemProps {
 
 interface SettingNavigationProps {
   settings: Settings;
+  userInfo: UserInfo;
   selectedTab: SettingsTabTitle;
   setSelectedTab: (title: SettingsTabTitle) => void;
 }
@@ -37,6 +39,7 @@ function SettingNavigationItem({
 
 export default function SettingNavigation({
   settings,
+  userInfo,
   selectedTab,
   setSelectedTab,
 }: SettingNavigationProps) {
@@ -44,9 +47,11 @@ export default function SettingNavigation({
     <nav>
       <h1>Settings</h1>
       <ul>
-        {settings.map((setting, index) => (
-          <SettingNavigationItem {...{ setting, selectedTab, setSelectedTab }} key={index} />
-        ))}
+        {settings
+          .filter(({ enabled }) => enabled(userInfo))
+          .map((setting, index) => (
+            <SettingNavigationItem {...{ setting, selectedTab, setSelectedTab }} key={index} />
+          ))}
       </ul>
     </nav>
   );

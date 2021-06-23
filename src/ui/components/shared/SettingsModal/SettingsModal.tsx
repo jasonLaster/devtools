@@ -12,6 +12,8 @@ import { UIState } from "ui/state";
 import * as selectors from "ui/reducers/app";
 import { SettingsTabTitle } from "ui/state/app";
 import * as actions from "ui/actions/app";
+import { User } from "@sentry/browser";
+import { UserInfo } from "ui/hooks/users";
 
 const settings: Settings = [
   // {
@@ -31,11 +33,13 @@ const settings: Settings = [
   {
     title: "Invitations",
     icon: "stars",
+    enabled: () => true,
     items: [],
   },
   {
     title: "Experimental",
     icon: "biotech",
+    enabled: (userInfo: UserInfo) => userInfo.internal,
     items: [
       {
         label: "Enable the Elements pane",
@@ -66,6 +70,7 @@ const settings: Settings = [
   {
     title: "Support",
     icon: "support",
+    enabled: () => true,
     items: [],
   },
 ];
@@ -74,10 +79,11 @@ function SettingsModal({ defaultSettingsTab }: PropsFromRedux) {
   // No need to handle loading state here as it's already cached from the useGetUserSettings
   // query in the DevTools component
   const { userSettings, loading } = hooks.useGetUserSettings();
+  const userInfo = hooks.useGetUserInfo();
   const [selectedTab, setSelectedTab] = useState<SettingsTabTitle>(defaultSettingsTab);
   const selectedSetting = settings.find(setting => setting.title === selectedTab)!;
 
-  if (loading) {
+  if (loading || userInfo.loading) {
     return (
       <div className="settings-modal">
         <Modal></Modal>
@@ -88,7 +94,7 @@ function SettingsModal({ defaultSettingsTab }: PropsFromRedux) {
   return (
     <div className="settings-modal">
       <Modal>
-        <SettingsNavigation {...{ settings, selectedTab, setSelectedTab }} />
+        <SettingsNavigation {...{ settings, userInfo, selectedTab, setSelectedTab }} />
         <SettingsBody {...{ selectedSetting, userSettings: userSettings! }} />
       </Modal>
     </div>
