@@ -1,2 +1,2 @@
-const { vendored } = require("./vendors");
-module.exports = vendored["devtools-modules"];
+// const { vendored } = require("./vendors");
+// module.exports = vendored["devtools-modules"];

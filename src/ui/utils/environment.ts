@@ -1,8 +1,11 @@
 declare global {
   var __IS_RECORD_REPLAY_RUNTIME__: boolean;
 }
+let url;
 
-const url = new URL(window.location.href);
+if (typeof window == "object") {
+  url = new URL(window.location.href);
+}
 
 export function isDevelopment() {
   return url.hostname == "localhost";

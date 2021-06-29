@@ -7,7 +7,7 @@ import formatDate from "date-fns/format";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import hooks from "ui/hooks";
 import { ChatAltIcon } from "@heroicons/react/outline";
-import "./RecordingListItem.css";
+// import "./RecordingListItem.css";
 
 function getDurationString(durationMs) {
   const seconds = Math.round(durationMs / 1000);

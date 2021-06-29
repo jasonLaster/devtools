@@ -7,7 +7,7 @@ import * as selectors from "ui/reducers/app";
 import { UIState } from "ui/state";
 import hooks from "ui/hooks";
 import Invitations from "./Navigation/Invitations";
-import "./Dashboard.css";
+// import "./Dashboard.css";
 
 function PersonalDashboard() {
   const { recordings, loading } = hooks.useGetPersonalRecordings();

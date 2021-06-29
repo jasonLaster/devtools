@@ -3,7 +3,7 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import * as selectors from "ui/reducers/app";
 import { UIState } from "ui/state";
-import "./MaterialIcon.css";
+// import "./MaterialIcon.css";
 
 type MaterialIconProps = PropsFromRedux & { children: string; className?: string };
 

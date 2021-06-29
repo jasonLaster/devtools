@@ -475,6 +475,9 @@ PrefBranch.prototype = {
    * Helper function to initialize the root PrefBranch.
    */
   _initializeRoot: function () {
+    window.telemetry = {};
+    window.telemetry.histograms = {};
+    window.telemetry.scalars = {};
     if (Services._defaultPrefsEnabled) {
       /* eslint-disable no-eval */
       // let devtools = require("raw!prefs!devtools/client/preferences/devtools");
@@ -532,10 +535,6 @@ class ObserverService {
   }
 }
 
-window.telemetry = {};
-window.telemetry.histograms = {};
-window.telemetry.scalars = {};
-
 const Services = {
   _prefs: null,
 
@@ -569,6 +568,7 @@ const Services = {
    */
   appinfo: {
     get OS() {
+      return "Darwin";
       const os = window.navigator.userAgent;
       if (os) {
         if (os.includes("Linux")) {

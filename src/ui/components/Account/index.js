@@ -4,9 +4,9 @@ import { setUserInBrowserPrefs } from "../../utils/browser";
 import { isTeamMemberInvite } from "ui/utils/environment";
 import Library from "./Library";
 
-import "./Account.css";
-import "../Header/Header.css";
-import "devtools/client/debugger/src/components/shared/AccessibleImage.css";
+// import "./Account.css";
+// import "../Header/Header.css";
+// import "devtools/client/debugger/src/components/shared/AccessibleImage.css";
 
 function WelcomePage() {
   const { loginWithRedirect } = useAuth0();

@@ -1,7 +1,6 @@
 import React from "react";
-import "./DashboardViewerHeader.css";
 import BatchActionDropdown from "./BatchActionDropdown";
-import "./DashboardViewerHeader.css";
+// import "./DashboardViewerHeader.css";
 
 function HeaderActions({ selectedIds, setSelectedIds, editing, toggleEditing }) {
   return (

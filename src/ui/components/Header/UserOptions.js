@@ -8,7 +8,7 @@ import Dropdown from "ui/components/shared/Dropdown";
 import MaterialIcon from "ui/components/shared/MaterialIcon";
 import { isDeployPreview } from "ui/utils/environment";
 import useAuth0 from "ui/utils/useAuth0";
-import "./UserOptions.css";
+// import "./UserOptions.css";
 
 const { features } = require("ui/utils/prefs");
 

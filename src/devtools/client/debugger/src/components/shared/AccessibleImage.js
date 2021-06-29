@@ -5,7 +5,7 @@
 import React from "react";
 import classnames from "classnames";
 
-import "./AccessibleImage.css";
+// import "./AccessibleImage.module.css";
 
 const AccessibleImage = props => {
   props = {

@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import hooks from "ui/hooks";
-import "./Invitations.css";
+// import "./Invitations.css";
 import { PendingWorkspaceInvitation, Workspace } from "ui/types";
 import { connect, ConnectedProps } from "react-redux";
 import * as actions from "ui/actions/app";
